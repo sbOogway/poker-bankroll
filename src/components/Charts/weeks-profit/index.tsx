@@ -6,9 +6,10 @@ import { WeeksProfitChart } from "./chart";
 type PropsType = {
   timeFrame?: string;
   className?: string;
+  dataPoints?: any;
 };
 
-export async function WeeksProfit({ className, timeFrame }: PropsType) {
+export async function WeeksProfit({ className, timeFrame, dataPoints }: PropsType) {
   const data = await getWeeksProfitData(timeFrame);
 
   return (
@@ -30,7 +31,7 @@ export async function WeeksProfit({ className, timeFrame }: PropsType) {
         /> */}
       </div>
 
-      <WeeksProfitChart data={data} />
+      <WeeksProfitChart data={dataPoints} />
     </div>
   );
 }

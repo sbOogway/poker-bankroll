@@ -8,26 +8,29 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-export function TopChannelsSkeleton() {
+export function SessionsSkeleton() {
   return (
     <div className="rounded-[10px] bg-white px-7.5 pb-4 pt-7.5 shadow-1 dark:bg-gray-dark dark:shadow-card">
       <h2 className="mb-5.5 text-body-2xlg font-bold text-dark dark:text-white">
-        Top Channels
+        Recent sessions
       </h2>
 
       <Table>
         <TableHeader>
           <TableRow className="border-none uppercase [&>th]:text-center">
-            <TableHead className="!text-left">Source</TableHead>
-            <TableHead>Visitors</TableHead>
+            <TableHead className="!text-left">Account</TableHead>
+            <TableHead>Starting time</TableHead>
+            <TableHead>Ending time</TableHead>
+            <TableHead>Buy-in</TableHead>
+            <TableHead>Cash-out</TableHead>
             <TableHead className="!text-right">Revenues</TableHead>
-            <TableHead>Sales</TableHead>
-            <TableHead>Conversion</TableHead>
+            <TableHead>Roi</TableHead>
+            <TableHead>Total time</TableHead>
           </TableRow>
         </TableHeader>
 
         <TableBody>
-          {Array.from({ length: 5 }).map((_, i) => (
+          {Array.from({ length: 10 }).map((_, i) => (
             <TableRow key={i}>
               <TableCell colSpan={100}>
                 <Skeleton className="h-8" />

@@ -19,8 +19,8 @@ export async function PaymentsOverview({
 
   // const dataSupabase = await getTable("sessions");
 
-  console.debug("debug" + dataPoints);
-  console.debug(dataPoints)
+  // console.debug("debug" + dataPoints);
+  // console.debug(dataPoints)
 
   return (
     <div

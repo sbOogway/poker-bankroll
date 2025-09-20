@@ -9,6 +9,7 @@ import { Notification } from "./notification";
 import { ThemeToggleSwitch } from "./theme-toggle";
 import { UserInfo } from "./user-info";
 import { TimeInterval } from "./time-interval";
+import { AccountSelector } from "./account-selector";
 
 export function Header() {
   const { toggleSidebar, isMobile } = useSidebarContext();
@@ -53,12 +54,15 @@ export function Header() {
           <SearchIcon className="pointer-events-none absolute left-5 top-1/2 -translate-y-1/2 max-[1015px]:size-5" />
         </div> */}
 
-
-
         {/* <Notification /> */}
 
-        <TimeInterval />
 
+        <div className="shrink-0">
+          <AccountSelector />
+        </div>
+        <div className="shrink-0">
+          <TimeInterval />
+        </div>
         <div className="shrink-0">
           <UserInfo />
         </div>

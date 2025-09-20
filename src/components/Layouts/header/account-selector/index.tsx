@@ -9,9 +9,9 @@ import { JSX, useState } from "react";
 import { ChevronUpIcon, CalendarIcon } from "@/assets/icons";
 import { cn, randomString } from "@/lib/utils";
 
-export function TimeInterval() {
+export function AccountSelector() {
   const timeIntervals = [
-    "Per Session",
+    "All",
     "This Week",
     "Today",
     "Current Month",

@@ -45,3 +45,5 @@ export function randomString(length = 12) {
 
 //   return supabase.from(tableName).select();
 // }
+
+
