@@ -1,6 +1,6 @@
 export async function getOverviewData() {
   // Fake delay
-  await new Promise((resolve) => setTimeout(resolve, 2000));
+  // await new Promise((resolve) => setTimeout(resolve, 2000));
 
   return {
     views: {

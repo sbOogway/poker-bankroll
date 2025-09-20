@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+// import { createClient } from "./supabase/server";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -16,7 +17,7 @@ export const urlSubdomain =
 export function getSessionFromCookie(
   cookie: Partial<{
     [key: string]: string;
-  }>
+  }>,
 ) {
   // console.debug(process.env.NEXT)
   const accessToken = cookie[`sb-${urlSubdomain}-auth-token`]?.slice(7);
@@ -29,11 +30,18 @@ export function getSessionFromCookie(
 }
 
 export function randomString(length = 12) {
-  const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let result = '';
+  const charset =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
   for (let i = 0; i < length; i++) {
     const index = Math.floor(Math.random() * charset.length);
     result += charset.charAt(index);
   }
   return result;
 }
+
+// export async function getTable(tableName: string) {
+//   const supabase = await createClient();
+
+//   return supabase.from(tableName).select();
+// }

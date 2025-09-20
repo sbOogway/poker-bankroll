@@ -2,21 +2,22 @@ import * as Icons from "../icons";
 
 export const NAV_DATA = [
   {
-    label: "MAIN MENU",
+    label: "",
     items: [
       {
         title: "Dashboard",
+        url: "/",
         icon: Icons.HomeIcon,
         items: [
-          {
-            title: "eCommerce",
-            url: "/",
-          },
+          // {
+          //   title: "eCommerce",
+          //   url: "/",
+          // },
         ],
       },
       {
-        title: "Calendar",
-        url: "/calendar",
+        title: "Accounts",
+        url: "/accounts",
         icon: Icons.Calendar,
         items: [],
       },

@@ -27,7 +27,16 @@ export default async function Home({ searchParams }: PropsType) {
   const { data: games } = await supabase.from("games").select();
   const { data: accounts } = await supabase.from("accounts").select();
 
-  console.log(sessions)
+  if (!sessions) {
+    return "Error fetching data from db";
+  }
+
+
+  const totalBuyIn = sessions.reduce((sum, session) => sum + session.buy_in, 0)
+
+
+
+  // console.log(sessions)
   return (
     <>
       <Suspense fallback={<OverviewCardsSkeleton />}>
@@ -39,6 +48,7 @@ export default async function Home({ searchParams }: PropsType) {
           className="col-span-12 xl:col-span-7"
           key={extractTimeFrame("payments_overview")}
           timeFrame={extractTimeFrame("payments_overview")?.split(":")[1]}
+          dataPoints={sessions}
         />
 
         <WeeksProfit

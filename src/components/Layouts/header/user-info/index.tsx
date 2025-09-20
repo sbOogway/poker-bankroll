@@ -11,6 +11,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { LogOutIcon, SettingsIcon, UserIcon } from "./icons";
+import { ThemeToggleSwitch } from "../theme-toggle";
 
 export function UserInfo() {
   const [isOpen, setIsOpen] = useState(false);
@@ -99,7 +100,13 @@ export function UserInfo() {
               Account Settings
             </span>
           </Link>
+          <div>
+            {/* <span className="mr-auto text-base font-medium">Theme</span> */}
+            <ThemeToggleSwitch />
+          </div>
         </div>
+
+        <hr className="border-[#E8E8E8] dark:border-dark-3" />
 
         <hr className="border-[#E8E8E8] dark:border-dark-3" />
 

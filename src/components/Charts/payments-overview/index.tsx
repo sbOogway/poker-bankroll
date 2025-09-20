@@ -7,13 +7,20 @@ import { PaymentsOverviewChart } from "./chart";
 type PropsType = {
   timeFrame?: string;
   className?: string;
+  dataPoints?: any;
 };
 
 export async function PaymentsOverview({
   timeFrame = "monthly",
+  dataPoints,
   className,
 }: PropsType) {
   const data = await getPaymentsOverviewData(timeFrame);
+
+  // const dataSupabase = await getTable("sessions");
+
+  console.debug("debug" + dataPoints);
+  console.debug(dataPoints)
 
   return (
     <div
@@ -27,7 +34,7 @@ export async function PaymentsOverview({
           Payments Overview
         </h2>
 
-        <PeriodPicker defaultValue={timeFrame} sectionKey="payments_overview" />
+        {/* <PeriodPicker defaultValue={timeFrame} sectionKey="payments_overview" /> */}
       </div>
 
       <PaymentsOverviewChart data={data} />

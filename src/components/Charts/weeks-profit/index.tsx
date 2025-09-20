@@ -23,11 +23,11 @@ export async function WeeksProfit({ className, timeFrame }: PropsType) {
           Profit {timeFrame || "this week"}
         </h2>
 
-        <PeriodPicker
+        {/* <PeriodPicker
           items={["this week", "last week"]}
           defaultValue={timeFrame || "this week"}
           sectionKey="weeks_profit"
-        />
+        /> */}
       </div>
 
       <WeeksProfitChart data={data} />
