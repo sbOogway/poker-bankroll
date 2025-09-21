@@ -49,17 +49,19 @@ export default async function Home({ searchParams }: PropsType) {
     0,
   );
 
-
   const datetimeChartData = sessions.map((session) => {
-    return {account: session.account, x: session.end_time, y: session.cash_out - session.buy_in};
-  })
+    return {
+      account: session.account,
+      x: session.end_time,
+      y: session.cash_out - session.buy_in,
+    };
+  });
 
   const startingBalances = accounts?.map((account) => {
-    return {[account.name]: account.initial_balance}
-  })
+    return { [account.name]: account.initial_balance };
+  });
 
   // console.debug(datetimeChartData)
-
 
   // console.log(sessions)
   return (
@@ -69,12 +71,6 @@ export default async function Home({ searchParams }: PropsType) {
       </Suspense>
 
       <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-9 2xl:gap-7.5">
-        <div className="col-span-12 grid xl:col-span-12">
-          <Suspense fallback={<SessionsSkeleton />}>
-            <SessionsTable className="" data={sessions} />
-          </Suspense>
-        </div>
-
         <BankrollGrowth
           className="col-span-12 xl:col-span-7"
           key={extractTimeFrame("payments_overview")}
@@ -89,6 +85,11 @@ export default async function Home({ searchParams }: PropsType) {
           dataPoints={{ buy_in: totalBuyIn, cash_out: totalCashOut }}
         />
 
+        <div className="col-span-12 grid xl:col-span-12">
+          <Suspense fallback={<SessionsSkeleton />}>
+            <SessionsTable className="" data={sessions} />
+          </Suspense>
+        </div>
         <UsedDevices
           className="col-span-12 xl:col-span-5"
           key={extractTimeFrame("used_devices")}
