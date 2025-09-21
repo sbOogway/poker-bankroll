@@ -10,6 +10,9 @@ import { compactFormat, standardFormat } from "@/lib/format-number";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { getTopChannels } from "../fetch";
+import { Button } from "@/components/ui-elements/button";
+import { DeployButton } from "@/components/deploy-button";
+import { Pen, PlusIcon, Trash } from "lucide-react";
 
 type TableArgs = {
   className: string;
@@ -19,7 +22,7 @@ type TableArgs = {
 export async function SessionsTable(args: TableArgs) {
   // const data = await getTopChannels();
 
-  console.debug(args.data);
+  // console.debug(args.data);
 
   return (
     <div
@@ -28,9 +31,15 @@ export async function SessionsTable(args: TableArgs) {
         args.className,
       )}
     >
-      <h2 className="mb-4 text-body-2xlg font-bold text-dark dark:text-white">
-        Recent sessions
-      </h2>
+      <div className="flex items-center mb-4">
+        <h2 className=" text-body-2xlg font-bold text-dark dark:text-white">
+          Recent sessions
+        </h2>
+
+        <Button variant="outlineGreen" shape={"rounded"} size={"s"} className="!p-1 ml-auto" label={<PlusIcon></PlusIcon>}>
+        </Button>
+
+      </div>
 
       <Table>
         <TableHeader>
@@ -79,23 +88,30 @@ export async function SessionsTable(args: TableArgs) {
                   <div className="">{session.account}</div>
                 </TableCell>
 
-
                 <TableCell className="!text-left">{session.category}</TableCell>
-                <TableCell className="!text-left">{session.start_time}</TableCell>
                 <TableCell className="!text-left">
-                  {session.end_time}
+                  {session.start_time}
                 </TableCell>
-                <TableCell className="!text-left">
-                  {duration}
-                </TableCell>
+                <TableCell className="!text-left">{session.end_time}</TableCell>
+                <TableCell className="!text-left">{duration}</TableCell>
                 <TableCell className="!text-right text-red">
                   {standardFormat(session.buy_in)}
                 </TableCell>
                 <TableCell className="!text-right text-green-light-1">
                   {standardFormat(session.cash_out)}
                 </TableCell>
-                <TableCell className="!text-right">{standardFormat(pl)}</TableCell>
-                <TableCell className="!text-right">{standardFormat(roi)}%</TableCell>
+                <TableCell className="!text-right">
+                  {standardFormat(pl)}
+                </TableCell>
+                <TableCell className="!text-right">
+                  {standardFormat(roi)}%
+                </TableCell>
+                <TableCell >
+                  <div className="flex gap-1">
+                  <Button variant={"outlinePrimary"} size={"s"} shape={"rounded"} label={<Pen></Pen>}></Button>
+                  <Button variant={"outlineRed"} size={"s"} shape={"rounded"} label={<Trash></Trash>}></Button>
+                  </div>
+                </TableCell>
               </TableRow>
             );
           })}

@@ -1,4 +1,4 @@
-import { PaymentsOverview } from "@/components/Charts/payments-overview";
+import { BankrollGrowth } from "@/components/Charts/bankroll-growth";
 import { UsedDevices } from "@/components/Charts/used-devices";
 import { WeeksProfit } from "@/components/Charts/weeks-profit";
 import { TopChannels } from "@/components/Tables/top-channels";
@@ -49,6 +49,18 @@ export default async function Home({ searchParams }: PropsType) {
     0,
   );
 
+
+  const datetimeChartData = sessions.map((session) => {
+    return {account: session.account, x: session.end_time, y: session.cash_out - session.buy_in};
+  })
+
+  const startingBalances = accounts?.map((account) => {
+    return {[account.name]: account.initial_balance}
+  })
+
+  // console.debug(datetimeChartData)
+
+
   // console.log(sessions)
   return (
     <>
@@ -63,11 +75,11 @@ export default async function Home({ searchParams }: PropsType) {
           </Suspense>
         </div>
 
-        <PaymentsOverview
+        <BankrollGrowth
           className="col-span-12 xl:col-span-7"
           key={extractTimeFrame("payments_overview")}
-          timeFrame={extractTimeFrame("payments_overview")?.split(":")[1]}
-          dataPoints={sessions}
+          dataPoints={datetimeChartData}
+          startingBalance={startingBalances}
         />
 
         <WeeksProfit

@@ -12,6 +12,7 @@ const buttonVariants = cva(
         outlinePrimary:
           "border border-primary hover:bg-primary/10 text-primary",
         outlineGreen: "border border-green hover:bg-green/10 text-green",
+        outlineRed: "border border-red hover:bg-red/10 text-red",
         outlineDark:
           "border border-dark hover:bg-dark/10 text-dark dark:hover:bg-white/10 dark:border-white/25 dark:text-white",
       },
@@ -23,6 +24,7 @@ const buttonVariants = cva(
       size: {
         default: "py-3.5 px-10 py-3.5 lg:px-8 xl:px-10",
         small: "py-[11px] px-6",
+        s: "!p-1"
       },
     },
     defaultVariants: {
@@ -35,7 +37,7 @@ const buttonVariants = cva(
 
 type ButtonProps = HTMLAttributes<HTMLButtonElement> &
   VariantProps<typeof buttonVariants> & {
-    label: string;
+    label: any;
     icon?: React.ReactNode;
   };
 
