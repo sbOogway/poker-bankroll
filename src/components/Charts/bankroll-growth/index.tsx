@@ -23,18 +23,17 @@ export async function BankrollGrowth({
         className,
       )}
     >
-      <div className="flex flex-wrap items-center justify-between gap-4">
+      <div className="flex flex-wrap justify-between gap-4">
         <h2 className="text-body-2xlg font-bold text-dark dark:text-white">
-          Bankroll Growth
+          Bankroll 
         </h2>
 
-        <span className="ml-auto text-3xl">
+        <span className={"ml-auto text-3xl" }>
           {totalBankroll}
         </span>
 
         {/* <PeriodPicker defaultValue={timeFrame} sectionKey="payments_overview" /> */}
       </div>
-
 
       <DatetimeChart chartLines={dataPoints} />
       {/* 

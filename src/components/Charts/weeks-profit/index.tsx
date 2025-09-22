@@ -1,21 +1,12 @@
-import { PeriodPicker } from "@/components/period-picker";
 import { cn } from "@/lib/utils";
-import { getWeeksProfitData } from "@/services/charts.services";
 import { WeeksProfitChart } from "./chart";
 
 type PropsType = {
-  timeFrame?: string;
   className?: string;
   dataPoints?: any;
 };
 
-export async function WeeksProfit({
-  className,
-  timeFrame,
-  dataPoints,
-}: PropsType) {
-  const data = await getWeeksProfitData(timeFrame);
-
+export async function WeeksProfit({ className, dataPoints }: PropsType) {
   return (
     <div
       className={cn(
@@ -28,17 +19,23 @@ export async function WeeksProfit({
           Profit
         </h2>
         <div className="ml-auto text-3xl">
-          <span>{(dataPoints.cash_out - dataPoints.buy_in).toFixed(2)}</span>
+          <span
+            className={
+              "text- text- ml-auto text-3xl" +
+              (dataPoints.cash_out - dataPoints.buy_in >= 0 ? "green" : "red")
+            }
+          >
+            {(dataPoints.cash_out - dataPoints.buy_in).toFixed(2)}
+          </span>
         </div>
-
-        {/* <PeriodPicker
-          items={["this week", "last week"]}
-          defaultValue={timeFrame || "this week"}
-          sectionKey="weeks_profit"
-        /> */}
       </div>
 
       <WeeksProfitChart data={dataPoints} />
+
+      {/* <div>
+        ROI:
+
+      </div> */}
     </div>
   );
 }

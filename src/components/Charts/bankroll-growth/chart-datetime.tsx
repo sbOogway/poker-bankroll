@@ -18,7 +18,7 @@ export function DatetimeChart(chartLines: any) {
     },
     colors: ["#5750F1", "#0ABEF9"],
     chart: {
-      height: 310,
+      // height: 310,
       type: "area",
       toolbar: {
         show: false,
@@ -89,7 +89,7 @@ export function DatetimeChart(chartLines: any) {
   
 
   return (
-    <div className="-ml-4 -mr-5 h-[310px]">
+    <div className="">
       <Chart options={options} series={chartLines.chartLines} type="area" height={310} />
     </div>
   );
