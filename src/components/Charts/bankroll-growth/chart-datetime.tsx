@@ -9,7 +9,7 @@ const Chart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
 
-export function DatetimeChart(data: { sessions: any; accounts: any }) {
+export function DatetimeChart(chartLines: any) {
   const isMobile = useIsMobile();
 
   const options: ApexOptions = {
@@ -84,34 +84,13 @@ export function DatetimeChart(data: { sessions: any; accounts: any }) {
   // console.debug(data.sessions);
   // console.debug(data.accounts);
 
-  const chartLines = data.accounts.map((account: any) => {
-    const accName = Object.keys(account)[0];
-    const accBal = Object.values(account)[0];
-    const accountSessions = data.sessions.filter(
-      (session: any) => session.account === accName,
-    );
-    const cleaning = accountSessions.map((sess: any) => {
-      return { x: sess.x, y: sess.y };
-    });
 
-
-    // @ts-ignore
-    cleaning.sort((a: any, b: any) => new Date(a.x) - new Date(b.x));
-
-    for (let i = 0; i < cleaning.length; i++) {
-      if (i === 0) {
-        cleaning[i].y = +((cleaning[i].y + accBal).toFixed(2));
-      } else {
-        cleaning[i].y = +((cleaning[i].y + cleaning[i - 1].y).toFixed(2));
-      }
-    }
-
-    return { name: accName, data: cleaning };
-  });
+  // console.debug(chartLines)
+  
 
   return (
     <div className="-ml-4 -mr-5 h-[310px]">
-      <Chart options={options} series={chartLines} type="area" height={310} />
+      <Chart options={options} series={chartLines.chartLines} type="area" height={310} />
     </div>
   );
 }

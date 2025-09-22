@@ -1,19 +1,17 @@
 import { PeriodPicker } from "@/components/period-picker";
 import { cn } from "@/lib/utils";
 import { getWeeksProfitData } from "@/services/charts.services";
-import { WeeksProfitChart } from "./chart";
+import { BarChart} from "./chart";
 
 type PropsType = {
   timeFrame?: string;
   className?: string;
   dataPoints?: any;
+  label?: string;
+  barColor?: string;
 };
 
-export async function WeeksProfit({
-  className,
-  timeFrame,
-  dataPoints,
-}: PropsType) {
+export async function BarChartContainer({ className, timeFrame, dataPoints, label, barColor }: PropsType) {
   const data = await getWeeksProfitData(timeFrame);
 
   return (
@@ -25,11 +23,8 @@ export async function WeeksProfit({
     >
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h2 className="text-body-2xlg font-bold text-dark dark:text-white">
-          Profit
+          {label}
         </h2>
-        <div className="ml-auto text-3xl">
-          <span>{(dataPoints.cash_out - dataPoints.buy_in).toFixed(2)}</span>
-        </div>
 
         {/* <PeriodPicker
           items={["this week", "last week"]}
@@ -38,7 +33,7 @@ export async function WeeksProfit({
         /> */}
       </div>
 
-      <WeeksProfitChart data={dataPoints} />
+      <BarChart data={dataPoints} color={barColor}/>
     </div>
   );
 }

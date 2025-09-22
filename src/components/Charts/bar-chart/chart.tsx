@@ -5,21 +5,22 @@ import dynamic from "next/dynamic";
 
 type PropsType = {
   data: {
-    buy_in: number;
-    cash_out: number;
-  };
+    x: any;
+    y: number;
+  }[];
+  color: any;
 };
 
 const Chart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
 
-export function WeeksProfitChart({ data }: PropsType) {
+export function BarChart({ data, color }: PropsType) {
   const options: ApexOptions = {
-    colors: ["#ff0000", "#00ff00"],
+    colors: [color],
     chart: {
       type: "bar",
-      stacked: true,
+      stacked: false,
       toolbar: {
         show: false,
       },
@@ -69,7 +70,7 @@ export function WeeksProfitChart({ data }: PropsType) {
     },
 
     xaxis: {
-      categories: ["buy-in", "cash-out"],
+      // categories: ["buy-in", "cash-out"],
       axisBorder: {
         show: false,
       },
@@ -98,13 +99,10 @@ export function WeeksProfitChart({ data }: PropsType) {
         options={options}
         series={[
           {
-            name: "Buy-Ins",
-            data: [+(data.buy_in.toFixed(2)), 0],
+            name: "time in min",
+            data: data,
           },
-          {
-            name: "Cash-Out",
-            data: [0, +(data.cash_out.toFixed(2))],
-          },
+          
         ]}
         type="bar"
         height={370}

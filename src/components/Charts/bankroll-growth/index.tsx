@@ -7,19 +7,19 @@ import { DatetimeChart } from "./chart-datetime";
 
 type PropsType = {
   className?: string;
-  startingBalance: any;
+  totalBankroll?: any;
   dataPoints?: any;
 };
 
 export async function BankrollGrowth({
   dataPoints,
-  startingBalance,
+  totalBankroll,
   className,
 }: PropsType) {
   return (
     <div
       className={cn(
-        "grid gap-2 rounded-[10px] bg-white px-7.5 pb-6 pt-7.5 shadow-1 dark:bg-gray-dark dark:shadow-card",
+        "grid gap-2 rounded-[10px] bg-white px-7.5 pt-7.5 shadow-1 dark:bg-gray-dark dark:shadow-card",
         className,
       )}
     >
@@ -28,11 +28,15 @@ export async function BankrollGrowth({
           Bankroll Growth
         </h2>
 
+        <span className="ml-auto text-3xl">
+          {totalBankroll}
+        </span>
+
         {/* <PeriodPicker defaultValue={timeFrame} sectionKey="payments_overview" /> */}
       </div>
 
 
-      <DatetimeChart sessions={dataPoints} accounts={startingBalance} />
+      <DatetimeChart chartLines={dataPoints} />
       {/* 
       <dl className="grid divide-stroke text-center dark:divide-dark-3 sm:grid-cols-2 sm:divide-x [&>div]:flex [&>div]:flex-col-reverse [&>div]:gap-1">
         <div className="dark:border-dark-3 max-sm:mb-3 max-sm:border-b max-sm:pb-3">
