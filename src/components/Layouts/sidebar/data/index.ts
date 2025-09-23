@@ -22,9 +22,15 @@ export const NAV_DATA = [
         items: [],
       },
       {
-        title: "Profile",
-        url: "/profile",
+        title: "Sessions",
+        url: "/sessions",
         icon: Icons.User,
+        items: [],
+      },
+      {
+        title: "Games",
+        url: "/games",
+        icon: Icons.FourCircle,
         items: [],
       },
       {

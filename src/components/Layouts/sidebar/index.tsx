@@ -1,7 +1,7 @@
 "use client";
 
 import { Logo } from "@/components/logo";
-import { cn } from "@/lib/utils";
+import { cn, randomString } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -9,6 +9,9 @@ import { NAV_DATA } from "./data";
 import { ArrowLeftIcon, ChevronUp } from "./icons";
 import { MenuItem } from "./menu-item";
 import { useSidebarContext } from "./sidebar-context";
+import { TimeInterval } from "@/components/ui-elements/time-interval";
+import { UserInfo } from "@/components/ui-elements/user-info";
+import { ThemeToggleSwitch } from "@/components/ui-elements/theme-toggle";
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -87,7 +90,13 @@ export function Sidebar() {
           </div>
 
           {/* Navigation */}
-          <div className="custom-scrollbar flex-1 overflow-y-auto pr-3 min-[850px]:mt-10 ">
+          <div className="custom-scrollbar flex-1 overflow-y-auto pr-3 min-[850px]:mt-10">
+            {/* <MenuItem isActive={false} onClick={() => {}}> */}
+              {/* <UserInfo></UserInfo> */}
+              <div>
+                <ThemeToggleSwitch></ThemeToggleSwitch>
+              </div>
+            {/* </MenuItem> */}
             {NAV_DATA.map((section) => (
               <div key={section.label} className="mb-6">
                 <h2 className="mb-5 text-sm font-medium text-dark-4 dark:text-dark-6">

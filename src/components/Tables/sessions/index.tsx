@@ -74,7 +74,7 @@ export async function SessionsTable(args: TableArgs) {
             return (
               <TableRow
                 className="text-center text-base font-medium text-dark dark:text-white"
-                key={session.name + i}
+                key={`${session.name}_${i}`}
               >
                 <TableCell className="flex min-w-fit items-center gap-3">
                   {/* <Image

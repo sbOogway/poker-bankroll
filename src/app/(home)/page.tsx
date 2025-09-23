@@ -1,33 +1,41 @@
 import { BankrollGrowth } from "@/components/Charts/bankroll-growth";
 import { UsedDevices } from "@/components/Charts/used-devices";
 import { WeeksProfit } from "@/components/Charts/weeks-profit";
-import { TopChannels } from "@/components/Tables/top-channels";
 import { SessionsSkeleton } from "@/components/Tables/sessions/skeleton";
-import { createTimeFrameExtractor } from "@/utils/timeframe-extractor";
 import { Suspense } from "react";
-import { ChatsCard } from "./_components/chats-card";
 import { OverviewCardsGroup } from "./_components/overview-cards";
 import { OverviewCardsSkeleton } from "./_components/overview-cards/skeleton";
-import { RegionLabels } from "./_components/region-labels";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { TimeInterval } from "@/components/Layouts/header/time-interval";
 import { SessionsTable } from "@/components/Tables/sessions";
-import { BarChart } from "@/components/Charts/bar-chart/chart";
 import { randomString } from "@/lib/utils";
 import { BarChartContainer } from "@/components/Charts/bar-chart";
 import config from "../../../tailwind.config";
-// import { useState } from "react";
+import { DropdownMenu } from "@/components/ui-elements/dropdown-menu";
+import { Button } from "@/components/ui-elements/button";
+import { Search } from "lucide-react";
+
+type searchKeys = {
+  accounts: string;
+  games: string;
+  timeFrame: string;
+};
 
 type PropsType = {
-  searchParams: Promise<{
-    selected_time_frame?: string;
-  }>;
+  searchParams: Promise<searchKeys>;
 };
 
 export default async function Home({ searchParams }: PropsType) {
-  const { selected_time_frame } = await searchParams;
-  const extractTimeFrame = createTimeFrameExtractor(selected_time_frame);
+  // console.log(searchParams)
+
+  const {
+    accounts: accountsQuery,
+    games: gamesQuery,
+    timeFrame: timeFrameQuery,
+  }: searchKeys = await searchParams;
+
+  // console.debug(gamesQuery);
+  // console.debug(timeFrameQuery);
 
   const supabase = await createClient();
   const sess = await supabase.auth.getSession();
@@ -36,16 +44,27 @@ export default async function Home({ searchParams }: PropsType) {
     return redirect("/auth/login");
   }
 
-  // console.debug("sess debug");
-  // console.debug(sess);
-
-  const { data: sessions } = await supabase.from("sessions").select();
+  var { data: sessions } = await supabase.from("sessions").select() // .eq("account", accountsQuery === "All"? true: accountsQuery);
   const { data: games } = await supabase.from("games").select();
-  const { data: accounts } = await supabase.from("accounts").select();
+  var { data: accounts } = await supabase.from("accounts").select() // .eq("name", accountsQuery === "All" ? true : accountsQuery);
 
   if (!sessions || !accounts || !games) {
     return "Error fetching data from db";
   }
+
+  const allAccounts = accounts.map(account => {return account.name});
+  // console.debug(allAccounts)
+  
+  if (accountsQuery !== "All") {
+    sessions = sessions.filter(session => session.account === accountsQuery)
+    accounts = accounts.filter(account => account.name === accountsQuery )
+  }
+
+
+  const startingBalances = accounts?.map((account) => {
+    return { [account.name]: account.initial_balance };
+  });
+  const mapStartingBalanaces = Object.assign({}, ...startingBalances);
 
   const totalBuyIn = sessions.reduce((sum, session) => sum + session.buy_in, 0);
   const totalCashOut = sessions.reduce(
@@ -61,7 +80,11 @@ export default async function Home({ searchParams }: PropsType) {
       (new Date(session.end_time) - new Date(session.start_time)) / (1000 * 60);
   });
 
-  // console.debug(sessions);
+  /*
+   here the calculation is not accurate because a session that starts in one day and
+   finishes on the next is added entirely on the second day.
+   @TODO: evaluate to fix or leave it like this
+  */
   const timeSpentPlayingStep1 = sessions.map((session) => {
     return { x: session.end_time.substring(0, 10), y: session.time };
   });
@@ -86,9 +109,7 @@ export default async function Home({ searchParams }: PropsType) {
     };
   });
 
-  const startingBalances = accounts?.map((account) => {
-    return { [account.name]: account.initial_balance };
-  });
+
 
   // console.debug(startingBalances);
 
@@ -118,26 +139,54 @@ export default async function Home({ searchParams }: PropsType) {
     return { name: accName, data: cleaning };
   });
 
-  const mapStartingBalanaces = Object.assign({}, ...startingBalances);
+
   const totalBankroll = chartLines.map((account) => {
-    return account.data[account.data.length - 1]?.y ?? mapStartingBalanaces[account.name];
+    return (
+      account.data[account.data.length - 1]?.y ??
+      mapStartingBalanaces[account.name]
+    );
   });
 
-  console.log(totalBankroll);
+  // console.log(mapStartingBalanaces);
+  // console.log(Object.keys(mapStartingBalanaces));
 
   return (
     <>
+      <div className="flex gap-4 pl-4">
+        <DropdownMenu
+          items={["All"].concat(allAccounts)}
+          query="accounts"
+        ></DropdownMenu>
+        <DropdownMenu
+          items={["All", "MTT", "Cash games"]}
+          query="games"
+        ></DropdownMenu>
+        <DropdownMenu
+          items={["All", "Today", "This Week", "Current Month", "Year to date"]}
+          query="time_range"
+        ></DropdownMenu>
+
+        <Button
+          variant={"outlinePrimary"}
+          size={"s"}
+          shape={"rounded"}
+          label={<Search></Search>}
+          // onClick={() => {}}
+          className="ml-auto"
+        ></Button>
+      </div>
+
       <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-9 2xl:gap-7.5">
         <BankrollGrowth
           className="col-span-12 xl:col-span-7"
-          key={extractTimeFrame("payments_overview")}
+          key={"bankroll_growth"}
           dataPoints={chartLines}
           totalBankroll={totalBankroll.reduce((total, num) => total + num, 0)}
           // startingBalance={startingBalances}
         />
 
         <WeeksProfit
-          key={extractTimeFrame("weeks_profit")}
+          key={"weeks_profit"}
           className="col-span-12 xl:col-span-5"
           dataPoints={{ buy_in: totalBuyIn, cash_out: totalCashOut }}
         />
@@ -152,8 +201,8 @@ export default async function Home({ searchParams }: PropsType) {
       <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-9 2xl:gap-7.5">
         <UsedDevices
           className="col-span-12 xl:col-span-6"
-          key={extractTimeFrame("used_devices")}
-          timeFrame={extractTimeFrame("used_devices")?.split(":")[1]}
+          key={"used_devices"}
+          // timeFrame={")?.split(":")[1]}
         />
 
         <BarChartContainer
