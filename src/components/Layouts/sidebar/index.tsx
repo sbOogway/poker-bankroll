@@ -12,6 +12,8 @@ import { useSidebarContext } from "./sidebar-context";
 import { TimeInterval } from "@/components/ui-elements/time-interval";
 import { UserInfo } from "@/components/ui-elements/user-info";
 import { ThemeToggleSwitch } from "@/components/ui-elements/theme-toggle";
+import { Button } from "@/components/ui-elements/button";
+import { ArrowLeft, Menu } from "lucide-react";
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -66,7 +68,7 @@ export function Sidebar() {
         aria-hidden={!isOpen}
         inert={!isOpen}
       >
-        <div className="flex h-full flex-col pl-[16px] pr-[8px]">
+        <div className="flex h-full flex-col pl-[16px] pr-[8px] pb-[16px]">
           <div className="">
             <Link
               href={"/"}
@@ -90,12 +92,7 @@ export function Sidebar() {
           </div>
 
           {/* Navigation */}
-          <div className="custom-scrollbar flex-1 overflow-y-auto pr-3 min-[850px]:mt-10">
-            {/* <MenuItem isActive={false} onClick={() => {}}> */}
-              {/* <UserInfo></UserInfo> */}
-              <div>
-                <ThemeToggleSwitch></ThemeToggleSwitch>
-              </div>
+          <div className="custom-scrollbar flex-1 overflow-y-auto pr-3 min-[850px]:mt-10 flex flex-col">
             {/* </MenuItem> */}
             {NAV_DATA.map((section) => (
               <div key={section.label} className="mb-6">
@@ -157,6 +154,7 @@ export function Sidebar() {
                               "url" in item
                                 ? item.url + ""
                                 : "/" +
+                                // @ts-ignore
                                   item.title.toLowerCase().split(" ").join("-");
 
                             return (
@@ -182,6 +180,10 @@ export function Sidebar() {
                 </nav>
               </div>
             ))}
+            <div className="mt-auto">
+              <ThemeToggleSwitch></ThemeToggleSwitch>
+              {/* <Button onClick={() => {}} label={<Menu></Menu>} shape={"rounded"} variant={"outlinePrimary"} size={"s"} className="ml-auto !px-4" > </Button> */}
+            </div>
           </div>
         </div>
       </aside>

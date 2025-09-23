@@ -13,9 +13,10 @@ import { redirect } from "next/navigation";
 type PropsType = {
   items: any[];
   query: string;
+  icon: any
 };
 
-export function DropdownMenu({ items, query }: PropsType) {
+export function DropdownMenu({ items, query, icon }: PropsType) {
 
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState(items[0]);
@@ -43,7 +44,7 @@ export function DropdownMenu({ items, query }: PropsType) {
       <DropdownTrigger className="rounded align-middle outline-none ring-primary ring-offset-2 focus-visible:ring-1 dark:ring-offset-gray-dark">
         <span className="sr-only">Dropdown menu {query}</span>
         <figure className="flex items-center gap-3">
-          <CalendarIcon />
+          {icon}
 
           <figcaption className="flex items-center gap-1 font-medium text-dark dark:text-dark-6 max-[1024px]:sr-only">
             <span>{selected}</span>

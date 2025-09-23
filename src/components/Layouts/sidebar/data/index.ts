@@ -1,6 +1,17 @@
+import { Gamepad, LogOut, LucideNotebookPen, LucidePiggyBank, PiggyBank, Settings, User } from "lucide-react";
 import * as Icons from "../icons";
 
-export const NAV_DATA = [
+type sidebarIndex = {
+  label: string;
+  items: {
+    title: string;
+    url: string;
+    icon: any;
+    items: {title: string, url:string}[];
+  }[];
+}[];
+
+export const NAV_DATA: sidebarIndex = [
   {
     label: "",
     items: [
@@ -8,105 +19,45 @@ export const NAV_DATA = [
         title: "Dashboard",
         url: "/",
         icon: Icons.HomeIcon,
-        items: [
-          // {
-          //   title: "eCommerce",
-          //   url: "/",
-          // },
-        ],
+        items: [],
       },
       {
         title: "Accounts",
         url: "/accounts",
-        icon: Icons.Calendar,
+        icon: PiggyBank,
         items: [],
       },
       {
         title: "Sessions",
         url: "/sessions",
-        icon: Icons.User,
+        icon: LucideNotebookPen,
         items: [],
       },
       {
         title: "Games",
         url: "/games",
-        icon: Icons.FourCircle,
+        icon: Gamepad,
         items: [],
       },
       {
-        title: "Forms",
-        icon: Icons.Alphabet,
-        items: [
-          {
-            title: "Form Elements",
-            url: "/forms/form-elements",
-          },
-          {
-            title: "Form Layout",
-            url: "/forms/form-layout",
-          },
-        ],
+        title: "Settings",
+        url: "/settings",
+        icon: Settings,
+        items: [],
       },
       {
-        title: "Tables",
-        url: "/tables",
-        icon: Icons.Table,
-        items: [
-          {
-            title: "Tables",
-            url: "/tables",
-          },
-        ],
+        title: "Profile",
+        url: "/user",
+        icon: User,
+        items: [],
       },
       {
-        title: "Pages",
-        icon: Icons.Alphabet,
-        items: [
-          {
-            title: "Settings",
-            url: "/pages/settings",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    label: "OTHERS",
-    items: [
-      {
-        title: "Charts",
-        icon: Icons.PieChart,
-        items: [
-          {
-            title: "Basic Chart",
-            url: "/charts/basic-chart",
-          },
-        ],
-      },
-      {
-        title: "UI Elements",
-        icon: Icons.FourCircle,
-        items: [
-          {
-            title: "Alerts",
-            url: "/ui-elements/alerts",
-          },
-          {
-            title: "Buttons",
-            url: "/ui-elements/buttons",
-          },
-        ],
-      },
-      {
-        title: "Authentication",
-        icon: Icons.Authentication,
-        items: [
-          {
-            title: "Sign In",
-            url: "/auth/sign-in",
-          },
-        ],
-      },
+        title: "Log out",
+        url: "/auth/sign-out",
+        icon: LogOut,
+        items: []
+      }
+    
     ],
   },
 ];

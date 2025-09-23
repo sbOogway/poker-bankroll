@@ -13,7 +13,7 @@ import { BarChartContainer } from "@/components/Charts/bar-chart";
 import config from "../../../tailwind.config";
 import { DropdownMenu } from "@/components/ui-elements/dropdown-menu";
 import { Button } from "@/components/ui-elements/button";
-import { Search } from "lucide-react";
+import { LucideClock, LucideGamepad, LucidePiggyBank, Search } from "lucide-react";
 
 type searchKeys = {
   accounts: string;
@@ -34,8 +34,9 @@ export default async function Home({ searchParams }: PropsType) {
     timeFrame: timeFrameQuery,
   }: searchKeys = await searchParams;
 
-  // console.debug(gamesQuery);
-  // console.debug(timeFrameQuery);
+  console.debug(gamesQuery);
+  console.debug(timeFrameQuery);
+  console.debug(accountsQuery)
 
   const supabase = await createClient();
   const sess = await supabase.auth.getSession();
@@ -55,9 +56,9 @@ export default async function Home({ searchParams }: PropsType) {
   const allAccounts = accounts.map(account => {return account.name});
   // console.debug(allAccounts)
   
-  if (accountsQuery !== "All") {
-    sessions = sessions.filter(session => session.account === accountsQuery)
-    accounts = accounts.filter(account => account.name === accountsQuery )
+  if (accountsQuery) {
+    sessions = sessions.filter(session => session.account === accountsQuery || accountsQuery === "All")
+    accounts = accounts.filter(account => account.name === accountsQuery || accountsQuery === "All")
   }
 
 
@@ -156,14 +157,17 @@ export default async function Home({ searchParams }: PropsType) {
         <DropdownMenu
           items={["All"].concat(allAccounts)}
           query="accounts"
+          icon={<LucidePiggyBank></LucidePiggyBank>}
         ></DropdownMenu>
         <DropdownMenu
           items={["All", "MTT", "Cash games"]}
           query="games"
+          icon={<LucideGamepad></LucideGamepad>}
         ></DropdownMenu>
         <DropdownMenu
           items={["All", "Today", "This Week", "Current Month", "Year to date"]}
           query="time_range"
+          icon={<LucideClock></LucideClock>}
         ></DropdownMenu>
 
         <Button
