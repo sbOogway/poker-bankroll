@@ -8,18 +8,22 @@ import {
 import { JSX, useState } from "react";
 import { ChevronUpIcon, CalendarIcon } from "@/assets/icons";
 import { cn, randomString } from "@/lib/utils";
-import { redirect } from "next/navigation";
+import { redirect, useSearchParams, useRouter } from "next/navigation";
+// import { useRouter } from "next/router";
+import { useValue } from "@/context/ValueContext";
 
 type PropsType = {
   items: any[];
   query: string;
-  icon: any
+  icon: any;
 };
 
 export function DropdownMenu({ items, query, icon }: PropsType) {
-
+  const searchParams = useSearchParams();
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState(items[0]);
+
+  const router = useRouter();
 
   const itemsDropdown: JSX.Element[] = [];
 
@@ -29,8 +33,13 @@ export function DropdownMenu({ items, query, icon }: PropsType) {
         onClick={() => {
           setIsOpen(false);
           setSelected(item);
-          redirect(`/?${query}=${item}`);
+          const params = new URLSearchParams(searchParams.toString());
+          params.set(query, item.toLowerCase().replace(/ /g, "_"))
+          window.history.pushState(null, "", `?${params.toString()}`)
+          router.refresh()
+
         }}
+
         className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-[9px] hover:bg-gray-2 hover:text-dark dark:hover:bg-dark-3 dark:hover:text-white"
         key={randomString()}
       >
@@ -67,7 +76,6 @@ export function DropdownMenu({ items, query, icon }: PropsType) {
         <h2 className="sr-only">Select dropdown menu {query}</h2>
         <div className="p-2 text-base text-[#4B5563] dark:text-dark-6 [&>*]:cursor-pointer">
           {itemsDropdown}
-          
         </div>
       </DropdownContent>
     </Dropdown>

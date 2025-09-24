@@ -21,7 +21,7 @@ export async function WeeksProfit({ className, dataPoints }: PropsType) {
         <div className="ml-auto text-3xl">
           <span
             className={
-              "text- text- ml-auto text-3xl" +
+              "ml-auto text-3xl text-" +
               (dataPoints.cash_out - dataPoints.buy_in >= 0 ? "green" : "red")
             }
           >

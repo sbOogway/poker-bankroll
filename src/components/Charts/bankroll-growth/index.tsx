@@ -29,7 +29,7 @@ export async function BankrollGrowth({
         </h2>
 
         <span className={"ml-auto text-3xl" }>
-          {totalBankroll}
+          {totalBankroll.toFixed(2)}
         </span>
 
         {/* <PeriodPicker defaultValue={timeFrame} sectionKey="payments_overview" /> */}

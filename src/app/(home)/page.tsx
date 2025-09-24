@@ -13,7 +13,16 @@ import { BarChartContainer } from "@/components/Charts/bar-chart";
 import config from "../../../tailwind.config";
 import { DropdownMenu } from "@/components/ui-elements/dropdown-menu";
 import { Button } from "@/components/ui-elements/button";
-import { LucideClock, LucideGamepad, LucidePiggyBank, Search } from "lucide-react";
+import {
+  LucideClock,
+  LucideGamepad,
+  LucidePiggyBank,
+  Search,
+} from "lucide-react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import useSessionStorage from "@/hooks/use-session-storage";
+import { useValue } from "@/context/ValueContext";
 
 type searchKeys = {
   accounts: string;
@@ -27,6 +36,11 @@ type PropsType = {
 
 export default async function Home({ searchParams }: PropsType) {
   // console.log(searchParams)
+  // const [value, setValue] = useState<string | null>(null);
+
+  // useEffect(() => {
+  //   const time
+  // })
 
   const {
     accounts: accountsQuery,
@@ -34,9 +48,9 @@ export default async function Home({ searchParams }: PropsType) {
     timeFrame: timeFrameQuery,
   }: searchKeys = await searchParams;
 
-  console.debug(gamesQuery);
-  console.debug(timeFrameQuery);
-  console.debug(accountsQuery)
+  // console.debug(gamesQuery);
+  // console.debug(timeFrameQuery);
+  // console.debug(accountsQuery)
 
   const supabase = await createClient();
   const sess = await supabase.auth.getSession();
@@ -45,22 +59,43 @@ export default async function Home({ searchParams }: PropsType) {
     return redirect("/auth/login");
   }
 
-  var { data: sessions } = await supabase.from("sessions").select() // .eq("account", accountsQuery === "All"? true: accountsQuery);
+  var { data: sessions } = await supabase.from("sessions").select(); // .eq("account", accountsQuery === "All"? true: accountsQuery);
   const { data: games } = await supabase.from("games").select();
-  var { data: accounts } = await supabase.from("accounts").select() // .eq("name", accountsQuery === "All" ? true : accountsQuery);
+  const { data: categories } = await supabase.from("categories").select("name");
+  var { data: accounts } = await supabase.from("accounts").select(); // .eq("name", accountsQuery === "All" ? true : accountsQuery);
 
-  if (!sessions || !accounts || !games) {
+  if (!sessions || !accounts || !games || !categories) {
     return "Error fetching data from db";
   }
 
-  const allAccounts = accounts.map(account => {return account.name});
+  const categoriesDropdownMenu = categories?.map((category) => {
+    return category.name;
+  });
+  console.debug(categoriesDropdownMenu);
+
+  const allAccounts = accounts.map((account) => {
+    return account.name;
+  });
   // console.debug(allAccounts)
-  
+
   if (accountsQuery) {
-    sessions = sessions.filter(session => session.account === accountsQuery || accountsQuery === "All")
-    accounts = accounts.filter(account => account.name === accountsQuery || accountsQuery === "All")
+    sessions = sessions.filter(
+      (session) => session.account === accountsQuery || accountsQuery === "all",
+    );
+    accounts = accounts.filter(
+      (account) => account.name === accountsQuery || accountsQuery === "all",
+    );
   }
 
+  // console.debug(sessions)
+  if (gamesQuery) {
+    sessions = sessions.filter(
+      (session) =>
+        gamesQuery === "all" ||
+        (session.category.startsWith("MTT") && gamesQuery === "mtt") ||
+        (session.category.startsWith("ZOOM") && gamesQuery === "cash_game"),
+    );
+  }
 
   const startingBalances = accounts?.map((account) => {
     return { [account.name]: account.initial_balance };
@@ -110,8 +145,6 @@ export default async function Home({ searchParams }: PropsType) {
     };
   });
 
-
-
   // console.debug(startingBalances);
 
   const chartLines = startingBalances.map((account: any) => {
@@ -140,7 +173,6 @@ export default async function Home({ searchParams }: PropsType) {
     return { name: accName, data: cleaning };
   });
 
-
   const totalBankroll = chartLines.map((account) => {
     return (
       account.data[account.data.length - 1]?.y ??
@@ -160,7 +192,7 @@ export default async function Home({ searchParams }: PropsType) {
           icon={<LucidePiggyBank></LucidePiggyBank>}
         ></DropdownMenu>
         <DropdownMenu
-          items={["All", "MTT", "Cash games"]}
+          items={["All"].concat(categoriesDropdownMenu)}
           query="games"
           icon={<LucideGamepad></LucideGamepad>}
         ></DropdownMenu>
@@ -170,14 +202,14 @@ export default async function Home({ searchParams }: PropsType) {
           icon={<LucideClock></LucideClock>}
         ></DropdownMenu>
 
-        <Button
-          variant={"outlinePrimary"}
-          size={"s"}
-          shape={"rounded"}
-          label={<Search></Search>}
-          // onClick={() => {}}
-          className="ml-auto"
-        ></Button>
+        <Link className="ml-auto" href={`/?time_range`}>
+          <Button
+            variant={"outlinePrimary"}
+            size={"s"}
+            shape={"rounded"}
+            label={<Search></Search>}
+          ></Button>
+        </Link>
       </div>
 
       <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-9 2xl:gap-7.5">
