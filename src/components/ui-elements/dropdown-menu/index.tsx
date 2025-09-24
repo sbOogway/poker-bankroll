@@ -35,8 +35,8 @@ export function DropdownMenu({ items, query, icon }: PropsType) {
           setSelected(item);
           const params = new URLSearchParams(searchParams.toString());
           params.set(query, item.toLowerCase().replace(/ /g, "_"))
-          window.history.pushState(null, "", `?${params.toString()}`)
-          router.refresh()
+          // window.history.pushState(null, "", `?${params.toString()}`)
+          router.push(`?${params.toString()}`)
 
         }}
 

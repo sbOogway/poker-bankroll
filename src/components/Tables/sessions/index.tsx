@@ -6,12 +6,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { compactFormat, standardFormat } from "@/lib/format-number";
+import { standardFormat } from "@/lib/format-number";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
-import { getTopChannels } from "../fetch";
 import { Button } from "@/components/ui-elements/button";
-import { DeployButton } from "@/components/deploy-button";
 import { Pen, PlusIcon, Trash } from "lucide-react";
 
 type TableArgs = {

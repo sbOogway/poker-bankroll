@@ -24,7 +24,6 @@ export async function getOverviewData() {
 
 export async function getChatsData() {
   // Fake delay
-  await new Promise((resolve) => setTimeout(resolve, 1000));
 
   return [
     {

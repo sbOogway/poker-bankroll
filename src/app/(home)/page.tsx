@@ -34,6 +34,8 @@ type PropsType = {
   searchParams: Promise<searchKeys>;
 };
 
+export const revalidate = 60
+
 export default async function Home({ searchParams }: PropsType) {
   // console.log(searchParams)
   // const [value, setValue] = useState<string | null>(null);
@@ -41,6 +43,8 @@ export default async function Home({ searchParams }: PropsType) {
   // useEffect(() => {
   //   const time
   // })
+
+  const start = performance.now()
 
   const {
     accounts: accountsQuery,
@@ -52,17 +56,41 @@ export default async function Home({ searchParams }: PropsType) {
   // console.debug(timeFrameQuery);
   // console.debug(accountsQuery)
 
+  const startSupa = performance.now()
   const supabase = await createClient();
+
+  const createClientSupa = performance.now()
+
   const sess = await supabase.auth.getSession();
 
+  const getSessionSupa = performance.now()
   if (!sess.data.session) {
     return redirect("/auth/login");
   }
 
+  
+
   var { data: sessions } = await supabase.from("sessions").select(); // .eq("account", accountsQuery === "All"? true: accountsQuery);
+  const sessionsSupa = performance.now()
   const { data: games } = await supabase.from("games").select();
+  const gamesSupa = performance.now()
   const { data: categories } = await supabase.from("categories").select("name");
+  const categoriesSupa = performance.now()
   var { data: accounts } = await supabase.from("accounts").select(); // .eq("name", accountsQuery === "All" ? true : accountsQuery);
+  const accountsSupa = performance.now()
+
+  console.log('--- Supabase timing report ---');
+  console.log(`createClient   : ${(createClientSupa - startSupa).toFixed(2)} ms`);
+  console.log(`getSession     : ${(getSessionSupa - startSupa).toFixed(2)} ms`);
+  console.log(`load sessions  : ${(sessionsSupa - startSupa).toFixed(2)} ms`);
+  console.log(`load games     : ${(gamesSupa - startSupa).toFixed(2)} ms`);
+  console.log(`load categories: ${(categoriesSupa - startSupa).toFixed(2)} ms`);
+  console.log(`load accounts  : ${(accountsSupa - startSupa).toFixed(2)} ms`);
+  console.log(`total elapsed  : ${(performance.now() - startSupa).toFixed(2)} ms`);
+
+  const supabaseFetch = performance.now()
+
+  // const {games, categories , accounts} = null;
 
   if (!sessions || !accounts || !games || !categories) {
     return "Error fetching data from db";
@@ -71,7 +99,6 @@ export default async function Home({ searchParams }: PropsType) {
   const categoriesDropdownMenu = categories?.map((category) => {
     return category.name;
   });
-  console.debug(categoriesDropdownMenu);
 
   const allAccounts = accounts.map((account) => {
     return account.name;
@@ -179,6 +206,12 @@ export default async function Home({ searchParams }: PropsType) {
       mapStartingBalanaces[account.name]
     );
   });
+
+  const end = performance.now()
+
+  console.log(`${(supabaseFetch - start)} ms excution time fetching supabase` )
+  console.log(`${(end - supabaseFetch)} ms excution time calculating stats` )
+  console.log(`${(end - start)} ms excution time total` )
 
   // console.log(mapStartingBalanaces);
   // console.log(Object.keys(mapStartingBalanaces));
