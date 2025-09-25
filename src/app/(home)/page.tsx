@@ -8,7 +8,7 @@ import { OverviewCardsSkeleton } from "./_components/overview-cards/skeleton";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { SessionsTable } from "@/components/Tables/sessions";
-import { randomString } from "@/lib/utils";
+import { randomString, formatMinutes } from "@/lib/utils";
 import { BarChartContainer } from "@/components/Charts/bar-chart";
 import config from "../../../tailwind.config";
 import { DropdownMenu } from "@/components/ui-elements/dropdown-menu";
@@ -20,9 +20,7 @@ import {
   Search,
 } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import useSessionStorage from "@/hooks/use-session-storage";
-import { useValue } from "@/context/ValueContext";
+import { SessionsReport } from "@/components/Charts/report";
 
 type searchKeys = {
   accounts: string;
@@ -34,17 +32,10 @@ type PropsType = {
   searchParams: Promise<searchKeys>;
 };
 
-export const revalidate = 60
+export const revalidate = 60;
 
 export default async function Home({ searchParams }: PropsType) {
-  // console.log(searchParams)
-  // const [value, setValue] = useState<string | null>(null);
-
-  // useEffect(() => {
-  //   const time
-  // })
-
-  const start = performance.now()
+  //  const start = performance.now()
 
   const {
     accounts: accountsQuery,
@@ -52,49 +43,50 @@ export default async function Home({ searchParams }: PropsType) {
     timeFrame: timeFrameQuery,
   }: searchKeys = await searchParams;
 
-  // console.debug(gamesQuery);
-  // console.debug(timeFrameQuery);
-  // console.debug(accountsQuery)
-
-  const startSupa = performance.now()
+  // const startSupa = performance.now()
   const supabase = await createClient();
 
-  const createClientSupa = performance.now()
+  // const createClientSupa = performance.now()
 
   const sess = await supabase.auth.getSession();
 
-  const getSessionSupa = performance.now()
+  // const getSessionSupa = performance.now()
   if (!sess.data.session) {
     return redirect("/auth/login");
   }
 
-  
-
-  var { data: sessions } = await supabase.from("sessions").select(); // .eq("account", accountsQuery === "All"? true: accountsQuery);
-  const sessionsSupa = performance.now()
+  var { data: sessions } = await supabase
+    .from("sessions")
+    .select("*, games (categories)"); // .eq("account", accountsQuery === "All"? true: accountsQuery);
+  // const sessionsSupa = performance.now()
   const { data: games } = await supabase.from("games").select();
-  const gamesSupa = performance.now()
+  // const gamesSupa = performance.now()
   const { data: categories } = await supabase.from("categories").select("name");
-  const categoriesSupa = performance.now()
+  // const categoriesSupa = performance.now()
   var { data: accounts } = await supabase.from("accounts").select(); // .eq("name", accountsQuery === "All" ? true : accountsQuery);
-  const accountsSupa = performance.now()
+  // const accountsSupa = performance.now()
 
-  console.log('--- Supabase timing report ---');
-  console.log(`createClient   : ${(createClientSupa - startSupa).toFixed(2)} ms`);
-  console.log(`getSession     : ${(getSessionSupa - startSupa).toFixed(2)} ms`);
-  console.log(`load sessions  : ${(sessionsSupa - startSupa).toFixed(2)} ms`);
-  console.log(`load games     : ${(gamesSupa - startSupa).toFixed(2)} ms`);
-  console.log(`load categories: ${(categoriesSupa - startSupa).toFixed(2)} ms`);
-  console.log(`load accounts  : ${(accountsSupa - startSupa).toFixed(2)} ms`);
-  console.log(`total elapsed  : ${(performance.now() - startSupa).toFixed(2)} ms`);
 
-  const supabaseFetch = performance.now()
+
+  // console.log('--- Supabase timing report ---');
+  // console.log(`createClient   : ${(createClientSupa - startSupa).toFixed(2)} ms`);
+  // console.log(`getSession     : ${(getSessionSupa - startSupa).toFixed(2)} ms`);
+  // console.log(`load sessions  : ${(sessionsSupa - startSupa).toFixed(2)} ms`);
+  // console.log(`load games     : ${(gamesSupa - startSupa).toFixed(2)} ms`);
+  // console.log(`load categories: ${(categoriesSupa - startSupa).toFixed(2)} ms`);
+  // console.log(`load accounts  : ${(accountsSupa - startSupa).toFixed(2)} ms`);
+  // console.log(`total elapsed  : ${(performance.now() - startSupa).toFixed(2)} ms`);
+
+  // const supabaseFetch = performance.now()
 
   // const {games, categories , accounts} = null;
 
   if (!sessions || !accounts || !games || !categories) {
     return "Error fetching data from db";
   }
+
+  // console.debug(sessions);
+  // console.debug(sessions[0].games.categories);
 
   const categoriesDropdownMenu = categories?.map((category) => {
     return category.name;
@@ -118,9 +110,7 @@ export default async function Home({ searchParams }: PropsType) {
   if (gamesQuery) {
     sessions = sessions.filter(
       (session) =>
-        gamesQuery === "all" ||
-        (session.category.startsWith("MTT") && gamesQuery === "mtt") ||
-        (session.category.startsWith("ZOOM") && gamesQuery === "cash_game"),
+        gamesQuery === "all" || session.games.categories.map((category: string) => category.toLowerCase().replace(/ /g, "_")).includes(gamesQuery),
     );
   }
 
@@ -207,11 +197,41 @@ export default async function Home({ searchParams }: PropsType) {
     );
   });
 
-  const end = performance.now()
+  // console.debug(timeSpentPlaying);
 
-  console.log(`${(supabaseFetch - start)} ms excution time fetching supabase` )
-  console.log(`${(end - supabaseFetch)} ms excution time calculating stats` )
-  console.log(`${(end - start)} ms excution time total` )
+  const totalTime = timeSpentPlaying.reduce(
+    (sum, point: any) => sum + point.y,
+    0,
+  );
+  const totalProfit = totalCashOut - totalBuyIn;
+  const totalROI = (totalCashOut / totalBuyIn) * 100;
+  const numberOfSessions = sessions.length;
+
+  /**
+   * report data
+   */
+  interface Report {
+    [key: string]: unknown;
+  }
+  var report: Report = {};
+  // report[""] = Number().toFixed(2);
+  report["Profit per hour"] = Number(totalProfit / (totalTime / 60)).toFixed(2);
+  report["Number of sessions"] = numberOfSessions;
+  report["Average time per session"] = formatMinutes(
+    totalTime / numberOfSessions,
+  );
+  report["Average profit per session"] = Number(
+    totalProfit / numberOfSessions,
+  ).toFixed(2);
+  report["Total profit"] = Number(totalProfit).toFixed(2);
+  report["Total ROI"] = Number(totalROI).toFixed(2) + "%";
+  report["Total time"] = formatMinutes(totalTime);
+
+  // const end = performance.now()
+
+  // console.log(`${(supabaseFetch - start)} ms excution time fetching supabase` )
+  // console.log(`${(end - supabaseFetch)} ms excution time calculating stats` )
+  // console.log(`${(end - start)} ms excution time total` )
 
   // console.log(mapStartingBalanaces);
   // console.log(Object.keys(mapStartingBalanaces));
@@ -234,20 +254,11 @@ export default async function Home({ searchParams }: PropsType) {
           query="time_range"
           icon={<LucideClock></LucideClock>}
         ></DropdownMenu>
-
-        <Link className="ml-auto" href={`/?time_range`}>
-          <Button
-            variant={"outlinePrimary"}
-            size={"s"}
-            shape={"rounded"}
-            label={<Search></Search>}
-          ></Button>
-        </Link>
       </div>
 
       <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-9 2xl:gap-7.5">
         <BankrollGrowth
-          className="col-span-12 xl:col-span-7"
+          className="col-span-12 xl:col-span-8"
           key={"bankroll_growth"}
           dataPoints={chartLines}
           totalBankroll={totalBankroll.reduce((total, num) => total + num, 0)}
@@ -256,29 +267,18 @@ export default async function Home({ searchParams }: PropsType) {
 
         <WeeksProfit
           key={"weeks_profit"}
-          className="col-span-12 xl:col-span-5"
+          className="col-span-12 xl:col-span-4"
           dataPoints={{ buy_in: totalBuyIn, cash_out: totalCashOut }}
         />
-      </div>
 
-      <div className="mt-8">
-        <Suspense fallback={<OverviewCardsSkeleton />}>
-          <OverviewCardsGroup />
-        </Suspense>
-      </div>
-
-      <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-9 2xl:gap-7.5">
-        <UsedDevices
-          className="col-span-12 xl:col-span-6"
-          key={"used_devices"}
-          // timeFrame={")?.split(":")[1]}
-        />
+        <SessionsReport className="col-span-12 xl:col-span-4" data={report} />
 
         <BarChartContainer
-          className="col-span-12 xl:col-span-6"
+          className="col-span-12 xl:col-span-8"
           key={randomString()}
           label="Time spent playing"
           dataPoints={timeSpentPlaying}
+          total={formatMinutes(totalTime)}
           // @ts-ignore
           barColor={config.theme?.extend?.colors.primary}
         />
@@ -288,11 +288,6 @@ export default async function Home({ searchParams }: PropsType) {
             <SessionsTable className="" data={sessions} />
           </Suspense>
         </div>
-        {/* <RegionLabels /> */}
-
-        {/* <Suspense fallback={null}>
-          <ChatsCard />
-        </Suspense> */}
       </div>
     </>
   );

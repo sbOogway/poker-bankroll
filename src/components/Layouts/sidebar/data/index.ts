@@ -1,4 +1,14 @@
-import { Gamepad, LogOut, LucideNotebookPen, LucidePiggyBank, PiggyBank, Settings, User } from "lucide-react";
+import {
+  Gamepad,
+  LogOut,
+  LucideList,
+  LucideNotebookPen,
+  LucidePiggyBank,
+  PiggyBank,
+  Settings,
+  TestTube,
+  User,
+} from "lucide-react";
 import * as Icons from "../icons";
 
 type sidebarIndex = {
@@ -7,16 +17,16 @@ type sidebarIndex = {
     title: string;
     url: string;
     icon: any;
-    items: {title: string, url:string}[];
+    items: { title: string; url: string }[];
   }[];
 }[];
 
 export const NAV_DATA: sidebarIndex = [
   {
-    label: "",
+    label: "Bankroll",
     items: [
       {
-        title: "Dashboard",
+        title: "Home",
         url: "/",
         icon: Icons.HomeIcon,
         items: [],
@@ -40,7 +50,18 @@ export const NAV_DATA: sidebarIndex = [
         items: [],
       },
       {
-        title: "Settings",
+        title: "Categories",
+        url: "/categories",
+        icon: LucideList,
+        items: [],
+      },
+    ],
+  },
+  {
+    label: "Settings",
+    items: [
+      {
+        title: "General",
         url: "/settings",
         icon: Settings,
         items: [],
@@ -55,9 +76,9 @@ export const NAV_DATA: sidebarIndex = [
         title: "Log out",
         url: "/auth/sign-out",
         icon: LogOut,
-        items: []
-      }
-    
+        items: [],
+      },
+      
     ],
   },
 ];

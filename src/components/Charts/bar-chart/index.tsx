@@ -1,23 +1,20 @@
-import { PeriodPicker } from "@/components/period-picker";
 import { cn } from "@/lib/utils";
-import { getWeeksProfitData } from "@/services/charts.services";
 import { BarChart} from "./chart";
 
 type PropsType = {
-  timeFrame?: string;
   className?: string;
   dataPoints?: any;
   label?: string;
   barColor?: string;
+  total: any;
 };
 
-export async function BarChartContainer({ className, timeFrame, dataPoints, label, barColor }: PropsType) {
-  const data = await getWeeksProfitData(timeFrame);
+export async function BarChartContainer({ className, total, dataPoints, label, barColor }: PropsType) {
 
   return (
     <div
       className={cn(
-        "rounded-[10px] bg-white px-7.5 pt-7.5 shadow-1 dark:bg-gray-dark dark:shadow-card",
+        "rounded-[10px] bg-white px-7.5 pt-7.5 shadow-1 dark:bg-gray-dark dark:shadow-card ",
         className,
       )}
     >
@@ -25,6 +22,7 @@ export async function BarChartContainer({ className, timeFrame, dataPoints, labe
         <h2 className="text-body-2xlg font-bold text-dark dark:text-white">
           {label}
         </h2>
+        <span className="text-3xl">{total}</span>
 
         {/* <PeriodPicker
           items={["this week", "last week"]}

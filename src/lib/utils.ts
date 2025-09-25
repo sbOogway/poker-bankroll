@@ -40,6 +40,20 @@ export function randomString(length = 12) {
   return result;
 }
 
+/**
+ * Convert minutes to a formatted string like "1h 30m".
+ * @param {number} minutes – total minutes (non‑negative integer)
+ * @returns {string} formatted time
+ */
+export function formatMinutes(minutes: number) {
+  const hrs = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+  const parts = [];
+  if (hrs) parts.push(`${hrs}h`);
+  if (mins || !hrs) parts.push(`${mins.toFixed(0)}m`);
+  return parts.join(' ');
+}
+
 // export async function getTable(tableName: string) {
 //   const supabase = await createClient();
 
