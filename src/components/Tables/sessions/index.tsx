@@ -16,11 +16,8 @@ type TableArgs = {
   data: any[];
 };
 
+
 export async function SessionsTable(args: TableArgs) {
-  // const data = await getTopChannels();
-
-  // console.debug(args.data);
-
   return (
     <div
       className={cn(
@@ -28,14 +25,22 @@ export async function SessionsTable(args: TableArgs) {
         args.className,
       )}
     >
-      <div className="flex items-center mb-4">
-        <h2 className=" text-body-2xlg font-bold text-dark dark:text-white">
+      <div className="mb-4 flex items-center">
+        <h2 className="text-body-2xlg font-bold text-dark dark:text-white">
           Recent sessions
         </h2>
 
-        <Button variant="outlineGreen" shape={"rounded"} size={"s"} className="!p-1 ml-auto" label={<PlusIcon></PlusIcon>}>
-        </Button>
-
+        <Button
+          variant="outlineGreen"
+          shape={"rounded"}
+          size={"s"}
+          className="ml-auto !p-1"
+          label={
+            <a href="/sessions/create">
+              <PlusIcon></PlusIcon>
+            </a>
+          }
+        ></Button>
       </div>
 
       <Table>
@@ -85,7 +90,7 @@ export async function SessionsTable(args: TableArgs) {
                   <div className="">{session.account}</div>
                 </TableCell>
 
-                <TableCell className="!text-left">{session.category}</TableCell>
+                <TableCell className="!text-left">{session.game}</TableCell>
                 <TableCell className="!text-left">
                   {session.start_time}
                 </TableCell>
@@ -103,10 +108,28 @@ export async function SessionsTable(args: TableArgs) {
                 <TableCell className="!text-right">
                   {standardFormat(roi)}%
                 </TableCell>
-                <TableCell >
+                <TableCell>
                   <div className="flex gap-1">
-                  <Button variant={"outlinePrimary"} size={"s"} shape={"rounded"} label={<Pen></Pen>}></Button>
-                  <Button variant={"outlineRed"} size={"s"} shape={"rounded"} label={<Trash></Trash>}></Button>
+                    <Button
+                      variant={"outlinePrimary"}
+                      size={"s"}
+                      shape={"rounded"}
+                      label={<Pen></Pen>}
+                    ></Button>
+                    <Button
+                      variant={"outlineRed"}
+                      size={"s"}
+                      shape={"rounded"}
+                      label={
+                        <a href={`/sessions/delete?id=${session.id}`}>
+                          <Trash></Trash>
+                        </a>
+                      }
+                      // onClick={() => {
+                      // deleteSession(supabase, session.id);
+                      // router.push("/session/delete?id=");
+                      // }}
+                    ></Button>
                   </div>
                 </TableCell>
               </TableRow>

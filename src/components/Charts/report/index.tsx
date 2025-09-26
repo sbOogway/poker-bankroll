@@ -9,7 +9,7 @@ export async function SessionsReport({ className, data }: PropsType) {
 
   Object.entries(data).map(([key, value]) => {
     reportElements.push(
-      <div className="flex">
+      <div key={key} className="flex">
         <span>{key}</span>
 
         <span className="ml-auto">{value}</span>
@@ -23,7 +23,7 @@ export async function SessionsReport({ className, data }: PropsType) {
         className,
       )}
     >
-      <h2 className="text-body-2xlg font-bold text-dark dark:text-white">
+      <h2 className="text-body-2xlg font-bold text-dark dark:text-white pb-4">
         Stats
       </h2>
       <div className="mt-auto flex flex-col gap-2">

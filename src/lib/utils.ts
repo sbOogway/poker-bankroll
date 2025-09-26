@@ -14,14 +14,16 @@ export const hasEnvVars =
 export const urlSubdomain =
   process.env.NEXT_PUBLIC_SUPABASE_URL?.match(/^https?:\/\/([^\.]+)/)?.[1];
 
-export function getSessionFromCookie(
-  cookie: Partial<{
-    [key: string]: string;
-  }>,
-) {
-  // console.debug(process.env.NEXT)
-  const accessToken = cookie[`sb-${urlSubdomain}-auth-token`]?.slice(7);
-  // console.debug(accessToken)
+export function getSessionFromCookie(cookie: string) {
+  const keyValuePairs = cookie.split(";");
+  const cookiesMap1 = keyValuePairs.map((keyValuePair: string) => {
+    return { [keyValuePair.split("=")[0]]: keyValuePair.split("=")[1] };
+  });
+
+  const cookiesMap = Object.assign({}, ...cookiesMap1)
+
+  const accessToken = cookiesMap[`sb-${urlSubdomain}-auth-token`].slice(7);
+
   if (!accessToken) {
     return null;
   }
@@ -51,7 +53,7 @@ export function formatMinutes(minutes: number) {
   const parts = [];
   if (hrs) parts.push(`${hrs}h`);
   if (mins || !hrs) parts.push(`${mins.toFixed(0)}m`);
-  return parts.join(' ');
+  return parts.join(" ");
 }
 
 // export async function getTable(tableName: string) {
@@ -59,5 +61,3 @@ export function formatMinutes(minutes: number) {
 
 //   return supabase.from(tableName).select();
 // }
-
-
